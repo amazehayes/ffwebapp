@@ -3,6 +3,42 @@ library(shinydashboard)
 library(DT)
 library(rsconnect)
 
+defenses <- read.csv("defenses.csv")
+defenses_avg <- read.csv("defenses_avg.csv")
+defenses_qb <- defenses[1:576,2:15]
+defenses_rb <- defenses[1:576,c(2,16:28)]
+defenses_wr <- defenses[1:576,c(2,29:38)]
+defenses_te <- defenses[1:576,c(2,39:48)]
+defenses_avg_qb <- defenses_avg[,1:13]
+defenses_avg_rb <- defenses_avg[,c(1,14:25)]
+defenses_avg_wr <- defenses_avg[,c(1,26:34)]
+defenses_avg_te <- defenses_avg[,c(1,35:43)]
+
+defenses_qb <- setNames(defenses_qb,c("Week","Player","PassAtt","Comp","Comp%","PassYards",
+                                      "PassTDs","INTs","RushAtts","RushYards","RushTDs","FPts(4pt)",
+                                      "FPts(6pt)","PosRank"))
+defenses_rb <- setNames(defenses_rb,c("Week","Player","RushAtts","RushYards","YPC","RushTDs",
+                                      "Targets","Receptions","RecYards","RecTDs","FPts(PPR)",
+                                      "FPts(1/2PPR)","FPts(Std)","PosRank"))
+defenses_wr <- setNames(defenses_wr,c("Week","Player","Targets","Receptions","Rec%","RecYards",
+                                      "RecTDs","FPts(PPR)","FPts(1/2PPR)","FPts(Std)","PosRank"))
+defenses_te <- setNames(defenses_te,c("Week","Player","Targets","Receptions","Rec%","RecYards",
+                                      "RecTDs","FPts(PPR)","FPts(1/2PPR)","FPts(Std)","PosRank"))
+
+defenses_avg_qb <- setNames(defenses_avg_qb,c("Team","PassAtt","Comp","Comp%","PassYards",
+                                              "PassTDs","INTs","RushAtts","RushYards","RushTDs",
+                                              "FPts(4pt)","FPts(6pt)","PosRank"))
+defenses_avg_rb <- setNames(defenses_avg_rb,c("Team","RushAtts","RushYards","YPC","RushTDs",
+                                              "Targets","Receptions","RecYards","RecTDs",
+                                              "FPts(PPR)","FPts(1/2PPR)","FPts(Std)","PosRank"))
+defenses_avg_wr <- setNames(defenses_avg_wr,c("Team","Targets","Receptions","Rec%","RecYards",
+                                              "RecTDs","FPts(PPR)","FPts(1/2PPR)","FPts(Std)",
+                                              "PosRank"))
+defenses_avg_te <- setNames(defenses_avg_te,c("Team","Targets","Receptions","Rec%","RecYards",
+                                              "RecTDs","FPts(PPR)","FPts(1/2PPR)","FPts(Std)",
+                                              "PosRank"))
+
+
 consistency <- read.csv("consistencydata.csv")
 consistency <- setNames(consistency, c("year","player","team","pos","posrank","games","total","avg",
                                                  "std.dev","floor","ceiling","CV%","COR","#top12",
@@ -76,8 +112,8 @@ qbdata <- setNames(qbdata,c("Year","Player","Age","Season","Round","Overall",
                             "RZ.TDPer<20","%PassTDs<20","RZ.INT%<20","%INTs<20","RZ.TD/INT<20",
                             "RZ.PassAtt<10","RZ.PassComp<10","RZ.Comp%<10","RZ.TDs<10","RZ.INTs<10",
                             "RZ.TD%<10","%PassTDs<10","RZ.INT%<10","%INTs<10","RZ.TD/INT<10",
-                            "FanPts","PPG","PPAtt","PosRank","OverRank","FPfromYards","FPfromTDs","FPfromRush",
-                            "YardMonster","TDdepend","MobileQB"))
+                            "FPts(4pt/TD)","FPts(6pt/TD)","PPG","PPAtt","PosRank(4pt/TD)","PosRank(6pt/TD)",
+                            "FPfromYards","FPfromTDs","FPfromRush","YardMonster","TDdepend","MobileQB"))
 
 rbdata <- read.csv("RBdata.csv")
 rbdata <- transform(rbdata,
@@ -209,6 +245,9 @@ ui <- dashboardPage(
     menuItem("Yearly Data", tabName = "yearly", icon = icon("table"),
              menuSubItem("Data", tabName = "yearlydata"),
              menuSubItem("Chart",tabName = "yearlychart")),
+    menuItem("Defenses", tabName = "defense", icon = icon("table"),
+             menuSubItem("Team Data", tabName = "teamdefense"),
+             menuSubItem("Averages", tabName = "avgdefense")),
     menuItem("Database", tabName = "database", icon = icon("database"),
              menuSubItem("Quarterback", tabName = "data_qb"),
              menuSubItem("Running Back", tabName = "data_rb"),
@@ -304,6 +343,20 @@ ui <- dashboardPage(
               column(8, plotOutput("yearly_graph")),
               column(3, DT::dataTableOutput("yearly_posrank")))),
     
+    tabItem(tabName = "teamdefense",
+            fluidRow(
+              column(4, selectInput("def_team","Choose Team:",
+                                    c(unique(as.character(defenses$Team))))),
+              column(4, selectInput("def_pos", "Choose Position:",
+                                    c("QB","RB","WR","TE")))),
+            fluidRow(style = "overflow-x: scroll", DT::dataTableOutput("team_defense"))),
+    
+    tabItem(tabName = "avgdefense",
+            fluidRow(
+              column(4, selectInput("def_avg","Choose Position:",
+                                    c("QB","RB","WR","TE")))),
+            fluidRow(style = "overflow-x: scroll", DT::dataTableOutput("avg_defense"))),
+    
     tabItem(tabName = "data_qb", 
             fluidPage(
             fluidRow(
@@ -318,8 +371,8 @@ ui <- dashboardPage(
                               "RZ.TDPer<20","%PassTDs<20","RZ.INT%<20","%INTs<20","RZ.TD/INT<20"),
                 RedZone10 = c("RZ.PassAtt<10","RZ.PassComp<10","RZ.Comp%<10","RZ.TDs<10","RZ.INTs<10",
                               "RZ.TD%<10","%PassTDs<10","RZ.INT%<10","%INTs<10","RZ.TD/INT<10"),
-                Fantasy = c("FanPts","PPG","PPAtt","PosRank","OverRank","FPfromYards","FPfromTDs",
-                            "FPfromRush","YardMonster","TDdepend","MobileQB")
+                Fantasy = c("FPts(4pt/TD)","FPts(6pt/TD)","PPG","PPAtt","PosRank(4pt/TD)","PosRank(6pt/TD)",
+                            "FPfromYards","FPfromTDs","FPfromRush","YardMonster","TDdepend","MobileQB")
               ),multiple = TRUE,selected = c("Year","Player","Team","Games","PassAtt","PassComp",
                                              "Comp%","PassYards","PassTDs","INTs")))),
             fluidRow(style = "overflow-x: scroll", DT::dataTableOutput("qbdata")))),
@@ -504,7 +557,11 @@ server <- function(input, output) {
       
       if(input$weekly_year != "All" & input$tog_weekly == "Points" & input$pos_weekly != "All") {
         weekly <- total_weekly_points
-        weekly <- total_weekly_points[total_weekly_points$year == input$weekly_year,]
+        weekly <- total_weekly_points[total_weekly_points$year == input$weekly_year & total_weekly_points$pos == input$pos_weekly,]
+      }
+      
+      if(input$weekly_year == "All" & input$tog_weekly == "Points" & input$pos_weekly != "All") {
+        weekly <- total_weekly_points
         weekly <- total_weekly_points[total_weekly_points$pos == input$pos_weekly,]
       }
       
@@ -519,7 +576,11 @@ server <- function(input, output) {
       
       if(input$weekly_year != "All" & input$tog_weekly == "Rank" & input$pos_weekly != "All") {
         weekly <- total_weekly_rank
-        weekly <- total_weekly_rank[total_weekly_rank$year == input$weekly_year,]
+        weekly <- total_weekly_rank[total_weekly_rank$year == input$weekly_year & total_weekly_rank$pos == input$pos_weekly,]
+      }
+      
+      if(input$weekly_year == "All" & input$tog_weekly == "Rank" & input$pos_weekly != "All") {
+        weekly <- total_weekly_rank
         weekly <- total_weekly_rank[total_weekly_rank$pos == input$pos_weekly,]
       }
       
@@ -612,6 +673,56 @@ server <- function(input, output) {
     },rownames = FALSE, options = list(dom = 't'))
   })
   
+  #Defenses Tab
+  output$team_defense <- DT::renderDataTable({
+    DT::datatable({
+      
+      if(input$def_pos == "QB") {
+        team_defense <- defenses_qb[defenses$Team == input$def_team,]
+      }
+      
+      if(input$def_pos == "RB") {
+        team_defense <- defenses_rb[defenses$Team == input$def_team,]
+      }
+      
+      if(input$def_pos == "WR") {
+        team_defense <- defenses_wr[defenses$Team == input$def_team,]
+      }
+      
+      if(input$def_pos == "TE") {
+        team_defense <- defenses_te[defenses$Team == input$def_team,]
+      }
+      
+    team_defense  
+    
+    },rownames = FALSE, options = list(dom = 't', pageLength = 20))
+  })
+  
+  output$avg_defense <- DT::renderDataTable({
+    DT::datatable({
+      
+      if(input$def_avg == "QB") {
+        avg_defense <- defenses_avg_qb
+      }
+      
+      if(input$def_avg == "RB") {
+        avg_defense <- defenses_avg_rb
+      }
+      
+      if(input$def_avg == "WR") {
+        avg_defense <- defenses_avg_wr
+      }
+      
+      if(input$def_avg == "TE") {
+        avg_defense <- defenses_avg_te
+      }
+      
+    avg_defense 
+      
+    },rownames = FALSE, options = list(dom = 't', pageLength = 35))
+  })
+  
+  
   #QB Database
   output$qbdata <- DT::renderDataTable({
     DT::datatable(
@@ -672,4 +783,3 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
-

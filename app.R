@@ -279,6 +279,14 @@ ui <- dashboardPage(
               ("– Datatable of every player’s yearly production (points and rank) since 2010."),
             br(),
             br(),
+            strong("Defense Data"),
+              ("- Two seperate datatables:"),
+            br(),
+              ("1) Team Data - a datatable that breaks down statlines for the top fantasy scorer each defense allowed to each position (QB, RB, WR, TE) by week"),
+            br(),
+              ("2) Averages - a datatable that shows the overall averages each defense allowed to each positions top fantasy scorer"),
+            br(),
+            br(),
             strong("Database"),
               ("– A massive, user-controlled fantasy football database in which you control the stats you want to see from the players you want to see. "),
             br(),
@@ -783,3 +791,4 @@ server <- function(input, output) {
 
 # Run the application 
 shinyApp(ui = ui, server = server)
+

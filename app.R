@@ -200,9 +200,11 @@ wrdata <- setNames(wrdata,c("Year","Player","Age","Season","Round","Overall",
                             "RZ.Rec%<20","RZ.RecTDs<20","RZ.%Targets<20","RZ.RecTD%<20",
                             "RZ.%RecTD<20","RZ.TeamTarget%<20","RZ.Targets<10","RZ.Receptions<10",
                             "RZ.Rec%<10","RZ.RecTDs<10","RZ.%Targets<10","RZ.RecTD%<10",
-                            "RZ.%RecTD<10","RZ.TeamTarget%<10","FanPts","PPG","PPTarget","PosRank",
-                            "OverRank","FPfromRec","FPfromRecYards","FPfromTDs","PPRMachine",
-                            "YardMonster","TDdepend"))
+                            "RZ.%RecTD<10","RZ.TeamTarget%<10","FPts(PPR)","FPts(1/2PPR)","FPts(STD)",
+                            "PPG(PPR)","PPG(1/2PPR)","PPG(STD)","PosRank(PPR)","PosRank(1/2PPR)",
+                            "PosRank(STD)","PPTarget(PPR)","PPTarget(1/2PPR)","PPTarget(STD)",
+                            "FPfromRec","FPfromRecYards","FPfromTDs","PPRMachine","YardMonster",
+                            "TDdepend"))
 
 tedata <- read.csv("TEdata2.csv",fileEncoding="latin1")
 tedata <- transform(tedata, 
@@ -230,9 +232,11 @@ tedata <- setNames(tedata,c("Year","Player","Age","Season","Round","Overall",
                             "RZ.Rec%<20","RZ.RecTDs<20","RZ.%Targets<20","RZ.RecTD%<20",
                             "RZ.%RecTD<20","RZ.TeamTarget%<20","RZ.Targets<10","RZ.Receptions<10",
                             "RZ.Rec%<10","RZ.RecTDs<10","RZ.%Targets<10","RZ.RecTD%<10",
-                            "RZ.%RecTD<10","RZ.TeamTarget%<10","FanPts","PPG","PPTarget","PosRank",
-                            "OverRank","FPfromRec","FPfromRecYards","FPfromTDs","PPRMachine",
-                            "YardMonster","TDdepend"))
+                            "RZ.%RecTD<10","RZ.TeamTarget%<10","FPts(PPR)","FPts(1/2PPR)","FPts(STD)",
+                            "PPG(PPR)","PPG(1/2PPR)","PPG(STD)","PosRank(PPR)","PosRank(1/2PPR)",
+                            "PosRank(STD)","PPTarget(PPR)","PPTarget(1/2PPR)","PPTarget(STD)",
+                            "FPfromRec","FPfromRecYards","FPfromTDs","PPRMachine","YardMonster",
+                            "TDdepend"))
 
 # Define UI for application that draws a histogram
 ui <- dashboardPage(
@@ -436,7 +440,9 @@ ui <- dashboardPage(
                                 "RZ.%Targets<20","RZ.RecTD%<20","RZ.%RecTD<20","RZ.TeamTarget%<20"),
                   RedZone10 = c("RZ.Targets<10","RZ.Receptions<10","RZ.Rec%<10","RZ.RecTDs<10",
                                 "RZ.%Targets<10","RZ.RecTD%<10","RZ.%RecTD<10","RZ.TeamTarget%<10"),
-                  Fantasy = c("FanPts","PPG","PPTarget","PosRank","OverRank","FPfromRec",
+                  Fantasy = c("FPts(PPR)","FPts(1/2PPR)","FPts(STD)","PPG(PPR)","PPG(1/2PPR)",
+                              "PPG(STD)","PosRank(PPR)","PosRank(1/2PPR)","PosRank(STD)",
+                              "PPTarget(PPR)","PPTarget(1/2PPR)","PPTarget(STD)","FPfromRec",
                               "FPfromRecYards","FPfromTDs","PPRMachine","YardMonster","TDdepend")
                 ),multiple = TRUE,selected = c("Year","Player","Team","Games","Targets","Receptions",
                                                "Reception%","RecYards","RecTDs")))),
@@ -456,7 +462,9 @@ ui <- dashboardPage(
                                 "RZ.%Targets<20","RZ.RecTD%<20","RZ.%RecTD<20","RZ.TeamTarget%<20"),
                   RedZone10 = c("RZ.Targets<10","RZ.Receptions<10","RZ.Rec%<10","RZ.RecTDs<10",
                                 "RZ.%Targets<10","RZ.RecTD%<10","RZ.%RecTD<10","RZ.TeamTarget%<10"),
-                  Fantasy = c("FanPts","PPG","PPTarget","PosRank","OverRank","FPfromRec",
+                  Fantasy = c("FPts(PPR)","FPts(1/2PPR)","FPts(STD)","PPG(PPR)","PPG(1/2PPR)",
+                              "PPG(STD)","PosRank(PPR)","PosRank(1/2PPR)","PosRank(STD)",
+                              "PPTarget(PPR)","PPTarget(1/2PPR)","PPTarget(STD)","FPfromRec",
                               "FPfromRecYards","FPfromTDs","PPRMachine","YardMonster","TDdepend")
                 ),multiple = TRUE,selected = c("Year","Player","Team","Games","Targets","Receptions",
                                                "Reception%","RecYards","RecTDs")))),

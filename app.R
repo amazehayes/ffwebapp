@@ -510,7 +510,8 @@ server <- function(input, output) {
     
     consistency
     
-  }, rownames = FALSE, options = list(lengthMenu = c(12,24,36,50)))
+  }, rownames = FALSE,extensions = 'Buttons',options = list(lengthMenu = c(12,24,36,50),dom = 'Bfrtip', buttons = c('excel',
+                                                                                              'csv','copy')))
   
   #Print Start/Sit Tool
   output$probA <- renderText({
@@ -609,7 +610,9 @@ server <- function(input, output) {
     })
     
     weekly
-  }, rownames = FALSE, options = list(lengthMenu = c(12,24,36,50)))
+  }, rownames = FALSE, extensions = 'Buttons' ,options = list(lengthMenu = c(12,24,36,50),
+                                                              dom = 'Bfrtip', buttons = 'excel',
+                                                              'csv','copy'))
   
   #Yearly Data
   output$yearly <- DT::renderDataTable({
@@ -670,7 +673,9 @@ server <- function(input, output) {
       }
     })
     yearly <- yearly[order(yearly$pos),]
-  }, rownames = FALSE, options = list(lengthMenu = c(12,24,36,50)))
+  },  rownames = FALSE, extensions = 'Buttons' ,options = list(lengthMenu = c(12,24,36,50),
+                                                               dom = 'Bfrtip', buttons = c('excel',
+                                                               'csv','copy')))
   
   #Yearly Graph
   output$yearly_graph <- renderPlot({
@@ -717,7 +722,9 @@ server <- function(input, output) {
       
     team_defense  
     
-    },rownames = FALSE, options = list(dom = 't', pageLength = 20))
+    },rownames = FALSE, extensions = 'Buttons', options = list(dom = 'Bfrtip', 
+                                                               buttons = c('excel','csv','copy'),
+                                                               pageLength = 20))
   })
   
   output$avg_defense <- DT::renderDataTable({
@@ -741,7 +748,9 @@ server <- function(input, output) {
       
     avg_defense 
       
-    },rownames = FALSE, options = list(dom = 't', pageLength = 35))
+    },rownames = FALSE, extensions = 'Buttons', options = list(dom = 'Bfrtip',
+                                                               buttons = c('excel','csv','copy'),
+                                                               pageLength = 35))
   })
   
   
@@ -752,8 +761,9 @@ server <- function(input, output) {
       if(!is.null(input$qb_vars)) {
         qbdata[,input$qb_vars, drop = FALSE]
       }
-      , rownames = FALSE,filter = "top" ,options = 
-        list(lengthMenu = c(10,25,50,100))
+      , rownames = FALSE, filter = "top" , extensions = 'Buttons', 
+      options = list(lengthMenu = c(10,25,50,100), dom = 'Bfrtip', buttons = c('excel',
+                                                                             'csv','copy'))
 
     )
   })
@@ -765,8 +775,9 @@ server <- function(input, output) {
       if(!is.null(input$rb_vars)) {
         rbdata[,input$rb_vars, drop = FALSE]
       }
-      , rownames = FALSE,filter = "top" ,options = 
-        list(lengthMenu = c(10,25,50,100))
+      , rownames = FALSE,filter = "top", extensions = 'Buttons',
+      options = list(lengthMenu = c(10,25,50,100), dom = 'Bfrtip', buttons = c('excel',
+                                                                             'csv','copy'))
       
     )
   })
@@ -778,8 +789,9 @@ server <- function(input, output) {
       if(!is.null(input$wr_vars)) {
         wrdata[,input$wr_vars, drop = FALSE]
       }
-      , rownames = FALSE,filter = "top" ,options = 
-        list(lengthMenu = c(10,25,50,100))
+      , rownames = FALSE,filter = "top", extensions = 'Buttons',
+      options = list(lengthMenu = c(10,25,50,100), dom = 'Bfrtip', buttons = c('excel',
+                                                                               'csv','copy'))
       
     ) 
     
@@ -792,8 +804,9 @@ server <- function(input, output) {
       if(!is.null(input$te_vars)) {
         tedata[,input$te_vars, drop = FALSE]
       }
-      , rownames = FALSE,filter = "top" ,options = 
-        list(lengthMenu = c(10,25,50,100))
+      , rownames = FALSE,filter = "top", extensions = 'Buttons',
+      options = list(lengthMenu = c(10,25,50,100), dom = 'Bfrtip', buttons = c('excel',
+                                                                               'csv','copy'))
       
     ) 
     
